@@ -94,3 +94,94 @@ const longestWordFinderTwoPointersOp2 = (array) => {
 }
 
 console.log(longestWordFinderTwoPointersOp2(textArray));
+
+// Ventana Deslizable Fija (Fixed Sliding Window)
+// Suma máxima de "k" números
+
+const numsFixedSlidingWindow1 = [10, 16, 3, 5, 40, 17, 26];
+const numsFixedSlidingWindow2 = [-4, -1, 0, 3, 10];
+// k es la variable del número de elementos que validaríamos, si fuera suma de 10, sería 10
+const k1 = 3;
+
+const sumaMaxima = (array, k) => {
+    // slice() retorna una copia del array original con una porción de éste.
+    // slice(0, 2) 0 es el índice donde comienza, 2 donde acaba (no incluiría el dos en este caso)
+    // ventanaInicial es una nueva variable que tiene la primer ventana
+    // Esta variable no es tan necesaria entiendo.
+    // Podría hacerse sin esta variable y guardarse en sumaActual pero sí se debe hacer la primer suma.
+    let ventanaInicial = array.slice(0, k);
+    // reduce() suma los elementos de todo el array
+    // Argumento acumulador, valorActual, valorInicial
+    // Con reduce() nos estamos ahorrando hacer un ciclo para hacer la suma de losvalores del array ventana
+    // sumaActual guardará la suma de la iteración respectiva
+    let sumaActual = ventanaInicial.reduce((acumulador, valorActual) => acumulador + valorActual, 0);
+    // sumaMaxima guardará el valor de la suma que resulte máxima.
+    // Al empezar tendrá que ser sumaActual porque es la primer suma
+    let sumaMaxima = sumaActual;
+    // Ciclo for para recorrer ventana.
+    // i comienza con el valor de k, que es el índice siguiente de la ventana
+    // en este caso el último índice utilizado fue 2
+    // i termina en el último índice del array a validar (i < array.length)
+    for (let i = k; i < array.length; i++) {
+        // Se actualiza valor de sumaActual con base en cada iteración
+        // sumaActual = Su valor actual + índice siguiente del array - "primer" índice del array
+        // array[i] es el nuevo índice, array[3], array[4], y así sucesivamente
+        // array[i - k] es el primer índice de la ventana, array[3 - valor k (3), que daría 0], array[4 - valor k (3), que daría 1], y así sucesivamente
+        sumaActual = sumaActual + array[i] - array[i - k]; // Agrega el nuevo elemento y elimina el primero
+        // Math.max(num1, num2) retorna el numero mayor de esos dos
+        // sumaMaxima guardará el nuevo valor máximo gracias a Math.max
+        sumaMaxima = Math.max(sumaMaxima, sumaActual);
+    }
+    // Retornar sumaMaxima (ya la mayor mayor después de todas las iteraciones)
+    return sumaMaxima;
+}
+
+console.log(sumaMaxima(numsFixedSlidingWindow1, k1));
+console.log(sumaMaxima(numsFixedSlidingWindow2, k1));
+
+// Ventana Deslizable Variable (Variable Sliding Window)
+
+// Unos Consecutivos
+// Obtener el máximo de unos consecutivos en un array.
+// Solo se pueden transformar ceros a unos k veces(en este caso 2)
+
+const numsVariableSlidingWindow1 = [1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0];
+const numsVariableSlidingWindow2 = [1, 1, 1, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0];
+const k2 = 2;
+
+const unosConsecutivos = (array, k) => {
+    // Crear variable que guarde el la longitud máxima que llevamos al momento
+    let longitudMaxima = 0;
+    // variable para indicar cuántos ceros llevamos utilizados
+    let ceros = 0;
+    // variable para la ventana de inicio (izquierda)
+    let inicio = 0;
+    // Ciclo para recorrer ventana
+    // fin(i) termina en el último índice del array a validar (fin < array.length)
+    // Comienza con una ventana pequeña (indice inicio 0 indice  )
+    for (let fin = 0; fin < array.length; fin++) {
+        // si el índice del fin tiene un cero, se agrega el contador a la variable cero
+        // para controlar que el total de ceros no sea mayor a k
+        if (array[fin] === 0 ) {
+            ceros++;
+        }
+        // mientras los ceros sean mayores a k:
+        // 1 si el indice del array es igual a cero, se reduce un cero
+        // 2 se actualiza la ventana (se recorre el inicio + 1)
+        while (ceros > k) {
+            if(array[inicio] === 0) {
+                ceros--;
+            }
+            inicio++;
+        }
+        // longitudActual es igual al fin (índice) - fin (índice) + 1 (porque estamos contando el número de valores revisados)
+        // Ejemplo, revisando dos índices, 0 (inicio), 4 (fin). Entonces revisamos 5 índices pero 4 - 0 es 4. Por eso + 1
+        const longitudActual = fin - inicio + 1;
+        // longitudMaxima guardará el nuevo valor máximo gracias a Math.max
+        longitudMaxima = Math.max(longitudActual, longitudMaxima);
+        }
+        return longitudMaxima;
+    }
+
+console.log(unosConsecutivos(numsVariableSlidingWindow1, k2));
+console.log(unosConsecutivos(numsVariableSlidingWindow2, k2));
